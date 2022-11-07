@@ -31,12 +31,12 @@ public class ContentPanel extends JPanel{
     private boolean pastMainIndex;
     
     //SORTINGCLOCK
-    private boolean running;
-    private int delay = 100;
     public static enum Sorting{
         BUBBLE,
         QUICK
     }
+    private boolean running;
+    private int delay = 100;
     public Sorting algo;
     public Timer timer;
 
