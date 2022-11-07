@@ -1,4 +1,4 @@
-package visualizer.v1_7;
+package current_version;
 
 import javax.swing.JFrame;
 

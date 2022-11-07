@@ -1,4 +1,4 @@
-package visualizer.v1_7;
+package current_version;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -12,7 +12,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import visualizer.v1_7.ContentPanel.Sorting;
+import current_version.ContentPanel.Sorting;
 
 public class IOPanel extends JPanel{
     

@@ -1,13 +1,16 @@
-package visualizer.v1_7;
+package current_version;
+import java.awt.BorderLayout;
 
-import java.awt.*;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class MasterPanel extends JPanel {
-    static JFrame w = new JFrame("Sorting Visualizer Beta v1.7");
+    
+    static JFrame w = new JFrame("Sorting Visualizer Beta v1.8");
     static ContentPanel cp = new ContentPanel(w);
     static IOPanel io = new IOPanel(w,cp);
+
+    static Thread t = new Thread(new RunClock(w,cp,io));
 
     MasterPanel(){
         w.add(cp, BorderLayout.CENTER);
@@ -22,11 +25,9 @@ public class MasterPanel extends JPanel {
     }
 
     public static void main(String[] args){
-        Thread t = new Thread(new RunClock(w,cp,io));
-        new MasterPanel();
-        
         t.start();
         try {
+            new MasterPanel();
             t.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
