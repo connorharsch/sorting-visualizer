@@ -107,55 +107,39 @@ public class ContentPanel extends JPanel{
                 if(i == 0){
                     str += "[";
                 }
-                
                 if(i == low){
                     str += "<font color='blue'>";
                     str += array[i];
                     str += "</font>";
-                    if(i == array.length-1){
-                        str += "]";
-                    }else{
-                        str += ", ";
-                    }
                 }else if(i == compare_index){
                     str += "<font color='red'>";
                     str += array[i];
                     str += "</font>";
-                    if(i == array.length-1){
-                        str += "]";
-                    }else{
-                        str += ", ";
-                    }
                 }else if(i == mainIndex){
                     str += "<font color='green'>";
                     str += array[i];
                     str += "</font>";
-                    if(i == array.length-1){
-                        str += "]";
-                    }else{
-                        str += ", ";
-                    }
                 }else if(i == high){
                     str += "<font color='blue'>";
                     str += array[i];
                     str += "</font>";
-                    if(i == array.length-1){
-                        str += "]";
-                    }else{
-                        str += ", ";
-                    }
                 }else{
                     str += array[i];
-                    if(i == array.length-1){
-                        str += "]";
-                    }else{
-                        str += ", ";
-                    }
                 }
+                str = format(str, i);
             } 
             str += "</html>";
         }
 
+        return str;
+    }
+
+    private String format(String str, int i) {
+        if(i == array.length-1){
+            str += "]";
+        }else{
+            str += ", ";
+        }
         return str;
     }
 
@@ -209,6 +193,7 @@ public class ContentPanel extends JPanel{
                             compare_index++; // replaces j, which is set equals low at the start of for-loop
                             IOPanel.labelArray.setText(genLabelArray());
                         }else{  // sort(arr, low, high)
+                            System.out.println("count: " + count + " tempIndex: " + tempIndex);
                             if(mainIndex == -1){ //if the first int index hasn't been set
                                 mainIndex = tempIndex;
                             }
@@ -228,7 +213,7 @@ public class ContentPanel extends JPanel{
                                 high = array.length-1;
                                 tempIndex = mainIndex;
                                 pastMainIndex = true;
-                                count = 0;
+                                count = -1;
                             }
 
                             if(!isSorted(mainIndex, array.length-1)){ //if the second partition isn't sorted
