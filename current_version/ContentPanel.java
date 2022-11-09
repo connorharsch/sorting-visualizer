@@ -200,9 +200,9 @@ public class ContentPanel extends JPanel{
 
                             if(!isSorted(0, mainIndex)){ //if the first partition isn't sorted
                                 if(tempIndex < 1){
-                                    tempIndex = mainIndex-count+1;
+                                    tempIndex = mainIndex +1;
                                 }else if(tempIndex == 1){
-                                    tempIndex = mainIndex-count;
+                                    tempIndex = mainIndex;
                                 }
                                 high = tempIndex-1;
                                 compare_index = 0;
@@ -232,6 +232,8 @@ public class ContentPanel extends JPanel{
         });
         timer.start();
     }
+
+    
 
     private void bubblesteps() {
         timer = new Timer(delay, new ActionListener(){
