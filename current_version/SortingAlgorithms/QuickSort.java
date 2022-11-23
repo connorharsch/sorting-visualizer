@@ -2,23 +2,10 @@ package SortingAlgorithms;
 
 import Visualizer.ContentPanel;
 
-public class QuickSort implements Runnable {
-
-    private static ContentPanel cp;
-
-    private static void sleep() {
-        try {
-            Thread.sleep(ContentPanel.delay);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
+public class QuickSort extends Threaded{
 
     public QuickSort(ContentPanel c) {
-        cp = c;
-        cp.init();
-        cp.t = new Thread(this);
-        cp.t.start();
+        super(c);
     }
 
     /*
@@ -28,38 +15,33 @@ public class QuickSort implements Runnable {
      * 
      * Params
      * arr : array to be sorted
-     * low : lowest index for the algorithm to start
-     * high : highest index for the algorithm to stop
+     * l : lowest index for the algorithm to start
+     * r : highest index for the algorithm to stop
      * 
      * Returns
      * returns i which is the index of the pivot in its sorted location
      */
 
-    private static int partition(int arr[], int low, int high) {
-        int pivot_index = high;
-        int i = low - 1;
-        for (int j = low; j < high; j++) {
-            ContentPanel.compare_index = j;
+    private static int partition(int arr[], int l, int r) {
+        int pivot_index = r;
+        int i = l - 1;
+        for (int j = l; j < r; j++) {
+            cp.compareIndex = j+1;
+            sleep();
             if (arr[j] <= arr[pivot_index]) {
                 i++;
 
                 int temp = arr[i];
                 arr[i] = arr[j];
-                arr[j] = temp;
-
-                sleep();
-                ContentPanel.array = arr;
-            } else {
-
-                sleep();
-                ContentPanel.array = arr;
-            }
+                arr[j] = temp;  
+            } 
+            cp.array = arr;
         }
 
         int temp = arr[i + 1];
-        arr[i + 1] = arr[high];
-        arr[high] = temp;
-        ContentPanel.array = arr;
+        arr[i + 1] = arr[r];
+        arr[r] = temp;
+        cp.array = arr;
         return i + 1;
     }
 
@@ -69,35 +51,29 @@ public class QuickSort implements Runnable {
      * 
      * Params
      * arr : array to be sorted
-     * low : lowest index for the algorithm to start
-     * high : highest index for the algorithm to stop
+     * l : lowest index for the algorithm to start
+     * r : highest index for the algorithm to stop
      * 
      * Returns
      * None
      */
-    private static void sort(int arr[], int low, int high) {
-        if (low < high) {
-            sleep();
-            int index = partition(arr, low, high);
-            ContentPanel.mainIndex = index;
-
-            sleep();
-            ContentPanel.high = index - 1;
-            ContentPanel.low = low;
-            sort(arr, low, index - 1);
-
-            sleep();
-            ContentPanel.high = high;
-            ContentPanel.low = index + 1;
-            sort(arr, index + 1, high);
-        }
-    }
-
     @Override
-    public void run() {
-        do {
-            sort(ContentPanel.array, 0, ContentPanel.array.length - 1);
-        } while (!cp.running);
-        cp.init();
+    protected void sort(int arr[], int l, int r) {
+        if (l < r) {
+
+            int index = partition(arr, l, r);
+
+            cp.mainIndex = index;
+            cp.compareIndex = -1;
+            cp.high = index - 1;
+            cp.low = l;
+            sort(arr, l, index - 1);
+
+            cp.mainIndex = index;
+            cp.compareIndex = -1;
+            cp.low = index + 1;
+            cp.high = r;
+            sort(arr, index + 1, r);
+        }
     }
 }

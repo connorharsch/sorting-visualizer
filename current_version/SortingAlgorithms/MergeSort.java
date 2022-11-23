@@ -2,32 +2,20 @@ package SortingAlgorithms;
 
 import Visualizer.ContentPanel;
 
-public class MergeSort implements Runnable {
+public class MergeSort extends Threaded{
 
-    private static ContentPanel cp;
-
-    private static void sleep() {
-        try {
-            Thread.sleep(ContentPanel.delay);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-    
     public MergeSort(ContentPanel c) {
-        cp = c;
-        cp.init();
-        cp.t = new Thread(this);
-        cp.t.start();
+        super(c);
     }
 
     // Merges two subarrays of arr[].
     // First subarray is arr[l..m]
     // Second subarray is arr[m+1..r]
     private static void merge(int arr[], int l, int m, int r) {
-        ContentPanel.low = l;
-        ContentPanel.high = r;
-        ContentPanel.mainIndex = m;
+        cp.compareIndex = -1;
+        cp.low = l;
+        cp.high = r;
+        cp.mainIndex = m;
         // Find sizes of two subarrays to be merged
         int n1 = m - l + 1;
         int n2 = r - m;
@@ -53,15 +41,13 @@ public class MergeSort implements Runnable {
         // Initial index of merged subarray array
         int k = l;
         while (i < n1 && j < n2) {
+            sleep();
+            cp.compareIndex = k;
             if (L[i] <= R[j]) {
-                sleep();
                 arr[k] = L[i];
-                ContentPanel.compare_index = k;
                 i++;
             } else {
-                sleep();
                 arr[k] = R[j];
-                ContentPanel.compare_index = k;
                 j++;
             }
             k++;
@@ -71,7 +57,7 @@ public class MergeSort implements Runnable {
         while (i < n1) {
             sleep();
             arr[k] = L[i];
-            ContentPanel.compare_index = k;
+            cp.compareIndex = k;
             i++;
             k++;
         }
@@ -80,35 +66,25 @@ public class MergeSort implements Runnable {
         while (j < n2) {
             sleep();
             arr[k] = R[j];
-            ContentPanel.compare_index = k;
+            cp.compareIndex = k;
             j++;
             k++;
         }
     }
 
     // Main function that sorts arr[l..r] using merge()
-    private static void sort(int arr[], int l, int r) {
+    @Override
+    protected void sort(int arr[], int l, int r) {
         if (l < r) {
-            sleep();
             // Find the middle point
             int m = (l + r) / 2;
 
-            sleep();
             // Sort first and second halves
             sort(arr, l, m);
             sort(arr, m + 1, r);
 
-            sleep();
             // Merge the sorted halves
             merge(arr, l, m, r);
         }
-    }
-
-    @Override
-    public void run() {
-        do {
-            sort(ContentPanel.array, 0, ContentPanel.array.length - 1);
-        } while (!cp.running);
-        cp.init();
     }
 }

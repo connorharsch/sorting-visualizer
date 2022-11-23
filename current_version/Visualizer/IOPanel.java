@@ -4,11 +4,11 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -16,134 +16,102 @@ import Visualizer.ContentPanel.Sorting;
 
 public class IOPanel extends JPanel {
 
-    JFrame window;
+    private GridBagConstraints gbc = new GridBagConstraints();
+    private ContentPanel cp;
 
-    static JLabel labelArray = new JLabel("-");;
-    static JPanel buttons = new JPanel();
-    static JPanel output = new JPanel();
-    static JPanel algs = new JPanel();
-    ContentPanel cp;
+    private JPanel output = new JPanel();
+    public static JLabel labelArray = new JLabel("-");
 
-    JButton bubblev1 = new JButton("Bubblesort V1");
-    JButton bubblev2 = new JButton("Bubblesort V2");
-    JButton bubblev3 = new JButton("Bubblesort V3");
-    JButton quick = new JButton("Quicksort");
-    JButton merge = new JButton("Mergesort");
-    JButton start = new JButton("Start");
-    JButton reset = new JButton("Reset");
+    private JPanel buttons = new JPanel();
+    private String[] buttonNames = { "Start", "Reset", "Bubble V1", "Bubble V2", "Bubble V3", "Select", "Quick", "Merge", "Heap" };
+    private JButton[] buttonArr = new JButton[buttonNames.length];
 
-    GridBagConstraints gbc = new GridBagConstraints();
+    private JPanel algs = new JPanel();
+    private JPanel row0 = new JPanel();
+    private JPanel row1 = new JPanel();
 
     IOPanel(ContentPanel c) {
         cp = c;
 
-        setLayout(new GridBagLayout());
         buttons.setLayout(new GridBagLayout());
         algs.setLayout(new GridBagLayout());
+        row0.setLayout(new GridBagLayout());
+        row1.setLayout(new GridBagLayout());
+        setLayout(new GridBagLayout());
 
-        labelArray.setFont(new Font("Times New Roman", Font.PLAIN, 22));
+        labelArray.setFont(new Font("Courier New", Font.BOLD, 14));
         labelArray.setForeground(Color.BLACK);
 
-        start.setFocusPainted(false);
-        format(start);
-        start.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (!cp.running) {
-                    try {
-                        cp.running = true;
-                        cp.animate();
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-                }
-            }
-        });
-
-        format(reset);
-        reset.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                reset();
-            }
-        });
-
-        format(bubblev1);
-        bubblev1.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                reset();
-                cp.algo = Sorting.BUBBLEV1;
-            }
-        });
-
-        format(bubblev2);
-        bubblev2.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                reset();
-                cp.algo = Sorting.BUBBLEV2;
-            }
-        });
-
-        format(bubblev3);
-        bubblev3.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                reset();
-                cp.algo = Sorting.BUBBLEV3;
-            }
-        });
-
-        format(quick);
-        quick.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                reset();
-                cp.algo = Sorting.QUICK;
-            }
-        });
-
-        format(merge);
-        merge.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                reset();
-                cp.algo = Sorting.MERGE;
-            }
-        });
-
-        add(output);
         output.add(labelArray);
-        buttons.add(start);
-        buttons.add(reset);
+        add(output);
 
+        algs.add(row0,gbc);
+        
         gbc.gridy = 1;
         add(buttons, gbc);
-
-        algs.add(bubblev1);
-        algs.add(bubblev2);
-        algs.add(bubblev3);
-        algs.add(quick);
-        algs.add(merge);
+        algs.add(row1, gbc);
 
         gbc.gridy = 2;
         add(algs, gbc);
+
+        ActionListener listener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Object o = e.getSource();
+
+                if (o == buttonArr[0]) {
+                    if (!cp.running) {
+                        try {
+                            cp.running = true;
+                            cp.animate();
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                } else {
+                    reset();
+                    if (o == buttonArr[2]) {
+                        cp.algo = Sorting.BUBBLEV1;
+                    } else if (o == buttonArr[3]) {
+                        cp.algo = Sorting.BUBBLEV2;
+                    } else if (o == buttonArr[4]) {
+                        cp.algo = Sorting.BUBBLEV3;
+                    } else if (o == buttonArr[5]) {
+                        cp.algo = Sorting.SELECT;
+                    } else if (o == buttonArr[6]) {
+                        cp.algo = Sorting.QUICK;
+                    } else if (o == buttonArr[7]) {
+                        cp.algo = Sorting.MERGE;
+                    } else if (o == buttonArr[8]) {
+                        cp.algo = Sorting.HEAP;
+                    }
+                }
+            }
+        };
+
+        for(int i = 0; i < buttonArr.length; i++){
+            buttonArr[i] = new JButton(buttonNames[i]);
+            if(i < 2){
+                buttons.add(buttonArr[i]);
+            }else if (i < 5){
+                row0.add(buttonArr[i]);
+            }else if (i < buttonArr.length){
+                row1.add(buttonArr[i]);
+            }
+            format(buttonArr[i]);
+            buttonArr[i].addActionListener(listener);
+        }
     }
 
     private void reset() {
         if (cp.running) {
-            System.out.println("RESET");
             try {
-                if (cp.timer != null) {
-                    cp.timer.stop();
-                }
                 if (cp.t != null) {
                     cp.t.stop();
                 }
-                cp.running = false;
                 labelArray.setText("-");
-                ContentPanel.compare_index = Integer.MAX_VALUE;
+                cp.running = false;
+                cp.init();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -153,5 +121,6 @@ public class IOPanel extends JPanel {
     private void format(JButton button) {
         button.setBackground(Color.WHITE);
         button.setBorderPainted(false);
+        button.setFocusPainted(false);
     }
 }

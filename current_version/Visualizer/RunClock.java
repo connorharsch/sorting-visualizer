@@ -4,7 +4,7 @@ public class RunClock implements Runnable {
 
     ContentPanel cp;
 
-    final int FPS = 30;
+    final int FPS = 24;
 
     RunClock(ContentPanel c) {
         cp = c;
@@ -26,7 +26,6 @@ public class RunClock implements Runnable {
             timer += (currentTime - lastTime);
             lastTime = currentTime;
             if (delta >= 1) {
-
                 cp.getPanelSize();
                 cp.repaint();
                 delta--;
